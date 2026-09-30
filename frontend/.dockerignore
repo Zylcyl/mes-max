@@ -1,0 +1,6 @@
+# 前端构建上下文（context: ./frontend）的忽略清单 —— Docker 只认「上下文目录下」的 .dockerignore，
+# 根目录那份对这里不生效，所以单独放一份，避免把 node_modules / dist 送进构建上下文。
+node_modules
+dist
+npm-debug.log*
+.env.local

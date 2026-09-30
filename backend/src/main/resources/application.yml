@@ -1,0 +1,93 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      force: true
+
+spring:
+  application:
+    name: mes-max
+  profiles:
+    active: h2
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: always
+  mvc:
+    async:
+      request-timeout: 0
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+
+mes-max:
+  # 演示数据生成器：首次启动为空库时按此窗口生成确定性业务流水
+  demo-data:
+    enabled: true
+    history-days: 14
+  # 设备数据采集模拟器（真实产线应由 DNC/OPC UA/FOCAS 网关写入）
+  simulator:
+    enabled: true
+    interval-ms: 2000
+  security:
+    # 新建账号 / 重置口令时使用的初始口令（不参与登录校验，可被环境变量覆盖）
+    default-password: ${MES_DEFAULT_PASSWORD:mes123456}
+    # 登录失败节流：同一账号在窗口内失败达到阈值后临时拒绝（防口令爆破）
+    login-max-failures: ${MES_LOGIN_MAX_FAILURES:8}
+    login-failure-window-seconds: ${MES_LOGIN_FAILURE_WINDOW:300}
+  cors:
+    # 允许跨域的来源白名单（逗号分隔）。前后端同源（Vite 代理 / Nginx 反代）时用不到；
+    # 留空 = 完全不开放跨域。切勿改回 "*"。
+    allowed-origin-patterns: ${MES_CORS_ORIGINS:http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173}
+
+logging:
+  level:
+    root: INFO
+    com.mesmax: INFO
+
+---
+# ================= H2（默认，零依赖） =================
+spring:
+  config:
+    activate:
+      on-profile: h2
+  datasource:
+    driver-class-name: org.h2.Driver
+    # 说明：
+    #  1) 刻意不开 AUTO_SERVER —— 它会让本进程之外的其它 Java 进程也能连上这个库文件，
+    #     对「仅本机演示」的场景是多余的攻击面；
+    #  2) 口令不再是空串：空口令 + 放行的 H2 控制台，等于把库直接暴露给能访问 8080 的人；
+    #  3) 控制台只在此 profile 下装配（mysql profile 不开启），且只允许本机访问。
+    url: jdbc:h2:file:./data/mesmax;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+    username: sa
+    password: mesmax
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: false
+
+---
+# ================= MySQL 8（生产） =================
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MES_DB_HOST:localhost}:${MES_DB_PORT:3306}/${MES_DB_NAME:mes_max}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    username: ${MES_DB_USER:root}
+    password: ${MES_DB_PASSWORD:root}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000

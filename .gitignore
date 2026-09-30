@@ -1,0 +1,28 @@
+# ---- build ----
+target/
+dist/
+node_modules/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# ---- runtime ----
+data/
+logs/
+*.log
+*.db
+*.mv.db
+*.trace.db
+
+# ---- ide ----
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# ---- env ----
+.env
+.env.local
+# 本机令牌密钥（由 run.cmd / run.sh 首次启动时生成，切勿提交）
+.jwt-secret

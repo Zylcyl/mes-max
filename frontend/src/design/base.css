@@ -1,0 +1,134 @@
+/* MES-MAX 基础样式：重置 + 全局排版 + 工业底纹 + 滚动条 */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg-body);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* 全局弱网格底纹：让界面像「图纸 / 控制台」而不是纯色页面 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+h1, h2, h3, h4, h5 {
+  margin: 0;
+  font-weight: 600;
+}
+
+p { margin: 0; }
+
+a {
+  color: var(--c-primary);
+  text-decoration: none;
+}
+
+table { border-collapse: collapse; }
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* 数字统一等宽、表格化数字 */
+.num, .mono {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.nowrap { white-space: nowrap; }
+.dim { color: var(--text-dim); }
+.mute { color: var(--text-mute); }
+.strong { color: var(--text-strong); font-weight: 600; }
+.center { display: flex; align-items: center; }
+.between { display: flex; align-items: center; justify-content: space-between; }
+.gap-1 { gap: var(--sp-1); }
+.gap-2 { gap: var(--sp-2); }
+.gap-3 { gap: var(--sp-3); }
+.gap-4 { gap: var(--sp-4); }
+.grow { flex: 1; }
+.ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* 状态色工具类 */
+.c-run { color: var(--c-run); }
+.c-idle { color: var(--c-idle); }
+.c-stop { color: var(--c-stop); }
+.c-alarm { color: var(--c-alarm); }
+.c-offline { color: var(--c-offline); }
+.c-maint { color: var(--c-maint); }
+.c-primary { color: var(--c-primary); }
+.c-cyan { color: var(--c-cyan); }
+
+/* 滚动条：细、深色、方形，符合工业终端观感 */
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: var(--bg-well); }
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border: 2px solid var(--bg-well);
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--text-mute); }
+::-webkit-scrollbar-corner { background: var(--bg-well); }
+
+/* 表单元素统一基线 */
+input, select, textarea {
+  background: var(--bg-well);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 5px 8px;
+  outline: none;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--c-primary-dim);
+  box-shadow: 0 0 0 1px var(--c-primary-dim);
+}
+input::placeholder { color: var(--text-mute); }
+select option { background: var(--bg-panel-2); }
+
+/* 页面级容器 */
+.page {
+  height: 100%;
+  overflow: auto;
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  position: relative;
+  z-index: 1;
+}
+
+.page-grid {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+/* 过渡 */
+.fade-enter-active, .fade-leave-active { transition: opacity 0.15s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }

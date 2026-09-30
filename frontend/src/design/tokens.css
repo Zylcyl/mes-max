@@ -1,0 +1,159 @@
+/*
+ * MES-MAX 工业化设计令牌
+ * ------------------------------------------------------------------
+ * 设计取向：车间 HMI / SCADA / 安灯看板，而不是互联网后台。
+ *   · 底色用「冷灰钢蓝」而不是纯黑，长时间盯屏不刺眼
+ *   · 主色用工业蓝，状态色严格区分 运行/待机/停机/报警/离线/保养
+ *   · 数字统一用等宽数字字体 + 表格数字对齐，便于横向比对
+ *   · 圆角一律很小（2px），因为工业设备面板几乎没有大圆角
+ */
+
+:root {
+  /* ---------- 层次底色 ---------- */
+  --bg-body: #0a0e13;
+  --bg-page: #0e141b;
+  --bg-panel: #131b24;
+  --bg-panel-2: #182230;
+  --bg-well: #0b1118;
+  --bg-hover: #1d2937;
+  --bg-active: #22303f;
+
+  /* ---------- 线条 ---------- */
+  --line: #223040;
+  --line-strong: #33465c;
+  --line-soft: #1a2431;
+
+  /* ---------- 文字 ---------- */
+  --text: #dbe6f0;
+  --text-strong: #f2f7fb;
+  --text-dim: #8b9db0;
+  --text-mute: #5d6f81;
+
+  /* ---------- 主色与状态色 ---------- */
+  --c-primary: #0aa2ff;
+  --c-primary-dim: #0a6fae;
+  --c-cyan: #16d3d3;
+  --c-run: #1fc96b;
+  --c-idle: #f5a524;
+  --c-stop: #ff4d4f;
+  --c-alarm: #ff2d55;
+  --c-offline: #657586;
+  --c-maint: #a855f7;
+  --c-info: #38bdf8;
+
+  /* ---------- 语义化背景 ---------- */
+  --c-run-bg: rgba(31, 201, 107, 0.14);
+  --c-idle-bg: rgba(245, 165, 36, 0.14);
+  --c-stop-bg: rgba(255, 77, 79, 0.14);
+  --c-maint-bg: rgba(168, 85, 247, 0.14);
+  --c-primary-bg: rgba(10, 162, 255, 0.14);
+
+  /* ---------- 字体 ---------- */
+  --font-ui: 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'Segoe UI', Arial, sans-serif;
+  --font-display: 'Bahnschrift', 'DIN Alternate', 'Oswald', 'Microsoft YaHei', sans-serif;
+  --font-num: 'Bahnschrift', 'DIN Alternate', 'JetBrains Mono', 'Consolas', 'Roboto Mono', monospace;
+
+  /* ---------- 尺寸 ---------- */
+  --radius: 2px;
+  --radius-lg: 3px;
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+
+  --h-topbar: 50px;
+  --h-nav: 42px;
+  --row-h: 32px;
+
+  /* ---------- 阴影与发光 ---------- */
+  --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 6px 18px rgba(0, 0, 0, 0.35);
+  --glow-run: 0 0 8px rgba(31, 201, 107, 0.75);
+  --glow-idle: 0 0 8px rgba(245, 165, 36, 0.75);
+  --glow-stop: 0 0 8px rgba(255, 77, 79, 0.75);
+  --glow-primary: 0 0 10px rgba(10, 162, 255, 0.55);
+
+  /* ---------- 主题相关的中性量（浅色主题会整体替换） ---------- */
+  --sheen: rgba(255, 255, 255, 0.03);          /* 面板上的高光渐变 */
+  --mask: rgba(4, 8, 12, 0.72);                 /* 弹层遮罩 */
+  --grid-line: rgba(255, 255, 255, 0.018);      /* 页面底纹网格 */
+  --row-zebra: rgba(255, 255, 255, 0.012);      /* 表格斑马纹 */
+  --login-bg: radial-gradient(120% 100% at 20% 10%, #101c28 0%, #070a0e 65%);
+  --board-bg: radial-gradient(120% 90% at 50% 0%, #101b26 0%, #080c11 70%);
+  --topbar-bg: linear-gradient(180deg, #17212c, #101820);
+  --nav-bg: linear-gradient(180deg, #101821, #0d141b);
+  --table-head-bg: #16202b;
+  --gantt-bar-text: #eaf4ff;
+  --btn-face-1: #1e2a38;
+  --btn-face-2: #17212c;
+  --btn-face-1-hover: #23364a;
+  --btn-face-2-hover: #1a2735;
+  --skin-scheme: dark;
+}
+
+/*
+ * 浅色主题（工业化浅灰白，而不是通用后台的纯白）。
+ * 设计原则：底色用冷灰白（#eef2f6 / #fff），线条用蓝灰，文字加深；
+ * 状态色（运行/待机/停机/报警）保留同一语义色相，只把亮度压深一点以保证在浅底上的对比度。
+ */
+:root[data-theme='light'] {
+  --bg-body: #dfe6ed;
+  --bg-page: #eef2f6;
+  --bg-panel: #ffffff;
+  --bg-panel-2: #f7fafc;
+  --bg-well: #eaeff4;
+  --bg-hover: #e6edf4;
+  --bg-active: #dbe5ef;
+
+  --line: #cfd9e3;
+  --line-strong: #b3c1ce;
+  --line-soft: #e3e9ef;
+
+  --text: #22303c;
+  --text-strong: #0f1b25;
+  --text-dim: #55677a;
+  /* 弱化文字在浅底上容易跌破可读阈值：#7d8d9c 对纯白约 3.1:1，
+     压深到 #63758a（约 4.8:1）后小字标签也看得清 */
+  --text-mute: #63758a;
+
+  --c-primary: #0a76c8;
+  --c-primary-dim: #0a6bb4;
+  --c-cyan: #0b8f9c;
+  --c-run: #128a4c;
+  --c-idle: #b06d05;
+  --c-stop: #cf2a2d;
+  --c-alarm: #c91540;
+  --c-offline: #71808f;
+  --c-maint: #7434d6;
+  --c-info: #0b76b8;
+
+  --c-run-bg: rgba(18, 138, 76, 0.12);
+  --c-idle-bg: rgba(176, 109, 5, 0.12);
+  --c-stop-bg: rgba(207, 42, 45, 0.1);
+  --c-maint-bg: rgba(116, 52, 214, 0.1);
+  --c-primary-bg: rgba(10, 118, 200, 0.1);
+
+  --shadow-panel: 0 1px 2px rgba(15, 27, 37, 0.06), 0 4px 12px rgba(15, 27, 37, 0.06);
+  --glow-run: 0 0 6px rgba(18, 138, 76, 0.45);
+  --glow-idle: 0 0 6px rgba(176, 109, 5, 0.4);
+  --glow-stop: 0 0 6px rgba(207, 42, 45, 0.4);
+  --glow-primary: 0 0 8px rgba(10, 118, 200, 0.35);
+
+  --sheen: rgba(15, 27, 37, 0.02);
+  --mask: rgba(15, 27, 37, 0.45);
+  --grid-line: rgba(15, 27, 37, 0.045);
+  --row-zebra: rgba(15, 27, 37, 0.015);
+  --login-bg: radial-gradient(120% 100% at 20% 10%, #f2f6fa 0%, #dde5ee 70%);
+  --board-bg: radial-gradient(120% 90% at 50% 0%, #f4f8fb 0%, #e4ebf2 75%);
+  --topbar-bg: linear-gradient(180deg, #ffffff, #f2f6fa);
+  --nav-bg: linear-gradient(180deg, #f7fafc, #eef3f8);
+  --table-head-bg: #eef3f8;
+  --gantt-bar-text: #10202c;
+  --btn-face-1: #ffffff;
+  --btn-face-2: #edf2f7;
+  --btn-face-1-hover: #f4f8fb;
+  --btn-face-2-hover: #e4ebf2;
+  --skin-scheme: light;
+}

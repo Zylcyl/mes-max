@@ -1,0 +1,67 @@
+# =====================================================================
+#  MES-MAX 一键部署（MySQL 8 + 后端 + Nginx 前端）
+#  使用：
+#    docker compose up -d --build
+#    前端 http://localhost:8888     后端 http://localhost:8080/api
+#  说明：默认演示环境用 H2（无需数据库），本文件用于「接近生产」的部署形态。
+# =====================================================================
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mesmax-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: mesmax@2026
+      MYSQL_DATABASE: mes_max
+      TZ: Asia/Shanghai
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --default-time-zone=+08:00
+    ports:
+      - '3307:3306'
+    volumes:
+      - mesmax-mysql:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-pmesmax@2026']
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build:
+      # 构建上下文是项目根目录：后端镜像需要同时拿到 backend/ 与 sql/
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: mesmax-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: mysql
+      MES_DB_HOST: mysql
+      MES_DB_PORT: 3306
+      MES_DB_NAME: mes_max
+      MES_DB_USER: root
+      MES_DB_PASSWORD: mesmax@2026
+      # 令牌签名密钥：请改成自己的强随机串（openssl rand -hex 32）。
+      # 这里刻意不写占位值 —— 把「公开的默认密钥」固化进部署文件比留空更危险；
+      # 留空时后端会在启动时随机生成（代价是重启后需要重新登录）。
+      MES_JWT_SECRET: ${MES_JWT_SECRET:-}
+      TZ: Asia/Shanghai
+    ports:
+      - '8080:8080'
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: mesmax-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - '8888:80'
+
+volumes:
+  mesmax-mysql:

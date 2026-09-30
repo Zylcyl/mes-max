@@ -1,0 +1,10 @@
+# 让 Docker 构建上下文保持干净（尤其是别把 node_modules 与构建产物送进 daemon）
+**/node_modules
+**/target
+**/dist
+**/data
+**/.git
+**/.idea
+**/*.log
+**/cp*.txt
+**/.jwt-secret
